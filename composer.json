@@ -1,7 +1,7 @@
 {
     "name": "josuealcalde-utamed/doctrine-enums-bundle",
     "replace": {
-      "josuealcalde-utamed/doctrine-enums": "self.version"
+      "enumenum/doctrine-enums-bundle": "self.version"
     },
     "description": "Bundle for Doctrine enumerations extension for Postgres",
     "license": "MIT",
