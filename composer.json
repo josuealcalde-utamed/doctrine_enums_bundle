@@ -1,5 +1,8 @@
 {
-    "name": "enumeum/doctrine-enums-bundle",
+    "name": "josuealcalde-utamed/doctrine-enums-bundle",
+    "replace": {
+      "josuealcalde-utamed/doctrine-enums": "self.version"
+    },
     "description": "Bundle for Doctrine enumerations extension for Postgres",
     "license": "MIT",
     "type": "library",
@@ -15,18 +18,22 @@
         {
             "name": "Alexey Sitka",
             "email": "alexey.sitka@gmail.com"
+        },
+        {
+            "name": "Josué Alcalde",
+            "email": "josue.alcalde@utamed.es"
         }
     ],
     "support": {
-        "email": "alexey.sitka@gmail.com"
+        "email": "josue.alcalde@utamed.es"
     },
     "require": {
         "php": "^8.1",
         "doctrine/migrations": "^3.2",
-        "doctrine/orm": "^2.14",
-        "enumeum/doctrine-enums": "^2.0",
-        "symfony/console": "^4.4 || ^5.4 || ^6.0",
-        "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.0"
+        "doctrine/orm": "^2.14 || ^3.2",
+        "josuealcalde-utamed/doctrine-enums": "^2.2",
+        "symfony/console": "^4.4 || ^5.4 || ^6.0 || ^7.0",
+        "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "doctrine/sql-formatter": "^1.0",
@@ -36,7 +43,7 @@
         "phpstan/phpstan": "^1.1",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^8.5 || ^9.5",
-        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0"
+        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0 || ^7.0"
     },
     "conflict": {
         "doctrine/dbal": "<2.13.1 || ^3.0 <3.2",
