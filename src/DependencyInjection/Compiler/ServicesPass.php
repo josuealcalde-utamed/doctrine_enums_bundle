@@ -24,6 +24,7 @@ use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\DiffCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\ValidateSchemaCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\ValidateSchemaCommand;
 use Enumeum\DoctrineEnumBundle\DefinitionRegistryCollection;
+use Enumeum\DoctrineEnumBundle\EventSubscriber\RegisterEnumTypeMappingSubscriber;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -94,6 +95,12 @@ class ServicesPass implements CompilerPassInterface
                 new Definition(PostGenerateSchemaSubscriber::class, [$definitionRegistry, $tableColumnRegistry]),
             );
             $eventManager->addMethodCall('addEventSubscriber', [$postGenerateSchemaSubscriber]);
+
+            $registerEnumTypeMappingSubscriber = $container->setDefinition(
+                sprintf('enumeum.%s_register_enum_type_mapping_subscriber', $name),
+                new Definition(RegisterEnumTypeMappingSubscriber::class, [$definitionRegistry]),
+            );
+            $eventManager->addMethodCall('addEventSubscriber', [$registerEnumTypeMappingSubscriber]);
 
             $schemaManager = $container->setDefinition(
                 sprintf('enumeum.%s_schema_manager', $name),
