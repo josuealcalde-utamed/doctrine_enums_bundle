@@ -50,7 +50,7 @@ class RegisterEnumTypeMappingSubscriber implements EventSubscriber
         // This allows Doctrine to recognize the enum types during schema introspection
         foreach ($this->definitionRegistry->getAll() as $definition) {
             $typeName = $definition->getName();
-            
+
             // Only register if not already registered
             if (!$platform->hasDoctrineTypeMappingFor($typeName)) {
                 $platform->registerDoctrineTypeMapping($typeName, 'string');
