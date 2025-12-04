@@ -96,12 +96,16 @@ class ServicesPass implements CompilerPassInterface
             );
             $eventManager->addMethodCall('addEventSubscriber', [$postGenerateSchemaSubscriber]);
 
-            // Register enum type mapping middleware for DBAL 4.0+
-            $registerEnumTypeMappingMiddleware = $container->setDefinition(
-                sprintf('enumeum.%s_register_enum_type_mapping_middleware', $name),
+            // Register enum type mapping configurator for DBAL 4.0+
+            // This configurator is invoked after the connection is created to register type mappings
+            $registerEnumTypeMappingConfigurator = $container->setDefinition(
+                sprintf('enumeum.%s_register_enum_type_mapping_configurator', $name),
                 new Definition(RegisterEnumTypeMappingMiddleware::class, [$definitionRegistry]),
             );
-            $registerEnumTypeMappingMiddleware->addTag('doctrine.middleware', ['connection' => $name]);
+            
+            // Add the configurator to the connection service
+            // The configurator will be called with the connection instance after it's created
+            $connection->setConfigurator([$registerEnumTypeMappingConfigurator, '__invoke']);
 
             $schemaManager = $container->setDefinition(
                 sprintf('enumeum.%s_schema_manager', $name),
