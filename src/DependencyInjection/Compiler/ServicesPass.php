@@ -102,7 +102,7 @@ class ServicesPass implements CompilerPassInterface
                 sprintf('enumeum.%s_register_enum_type_mapping_configurator', $name),
                 new Definition(RegisterEnumTypeMappingConfigurator::class, [$definitionRegistry]),
             );
-            
+
             // Add the configurator to the connection service
             // The configurator will be called with the connection instance after it's created
             $connection->setConfigurator([$registerEnumTypeMappingConfigurator, '__invoke']);

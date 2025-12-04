@@ -31,6 +31,8 @@ final class RegisterEnumTypeMappingConfigurator
 
     /**
      * Configure the DBAL connection by registering enum type mappings.
+     *
+     * @param Connection $connection The DBAL connection to configure
      */
     public function __invoke(Connection $connection): void
     {
