@@ -9,19 +9,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Enumeum\DoctrineEnumBundle\EventSubscriber;
+namespace Enumeum\DoctrineEnumBundle\Middleware;
 
-use Doctrine\Common\EventSubscriber;
-use Doctrine\DBAL\Event\ConnectionEventArgs;
-use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Connection;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 
 /**
- * Event subscriber that registers enum types with Doctrine's type mapping system.
+ * Connection configurator that registers enum types with Doctrine's type mapping system.
  * This ensures that when Doctrine introspects the database schema (e.g., during schema:drop),
  * it recognizes custom PostgreSQL enum types and doesn't throw "Unknown database type" errors.
+ *
+ * In DBAL 4.0, this is invoked as a service configurator after the connection is created
+ * to register type mappings on the platform.
  */
-class RegisterEnumTypeMappingSubscriber implements EventSubscriber
+final class RegisterEnumTypeMappingConfigurator
 {
     public function __construct(
         private readonly DefinitionRegistry $definitionRegistry,
@@ -29,21 +30,12 @@ class RegisterEnumTypeMappingSubscriber implements EventSubscriber
     }
 
     /**
-     * {@inheritdoc}
+     * Configure the DBAL connection by registering enum type mappings.
+     *
+     * @param Connection $connection The DBAL connection to configure
      */
-    public function getSubscribedEvents(): array
+    public function __invoke(Connection $connection): void
     {
-        return [
-            Events::postConnect,
-        ];
-    }
-
-    /**
-     * Registers all enum types as Doctrine type mappings when a database connection is established.
-     */
-    public function postConnect(ConnectionEventArgs $args): void
-    {
-        $connection = $args->getConnection();
         $platform = $connection->getDatabasePlatform();
 
         // Register each enum type name as a string type mapping

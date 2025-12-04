@@ -24,7 +24,7 @@ use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\DiffCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\ValidateSchemaCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\ValidateSchemaCommand;
 use Enumeum\DoctrineEnumBundle\DefinitionRegistryCollection;
-use Enumeum\DoctrineEnumBundle\EventSubscriber\RegisterEnumTypeMappingSubscriber;
+use Enumeum\DoctrineEnumBundle\Middleware\RegisterEnumTypeMappingConfigurator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -96,11 +96,16 @@ class ServicesPass implements CompilerPassInterface
             );
             $eventManager->addMethodCall('addEventSubscriber', [$postGenerateSchemaSubscriber]);
 
-            $registerEnumTypeMappingSubscriber = $container->setDefinition(
-                sprintf('enumeum.%s_register_enum_type_mapping_subscriber', $name),
-                new Definition(RegisterEnumTypeMappingSubscriber::class, [$definitionRegistry]),
+            // Register enum type mapping configurator for DBAL 4.0+
+            // This configurator is invoked after the connection is created to register type mappings
+            $registerEnumTypeMappingConfigurator = $container->setDefinition(
+                sprintf('enumeum.%s_register_enum_type_mapping_configurator', $name),
+                new Definition(RegisterEnumTypeMappingConfigurator::class, [$definitionRegistry]),
             );
-            $eventManager->addMethodCall('addEventSubscriber', [$registerEnumTypeMappingSubscriber]);
+
+            // Add the configurator to the connection service
+            // The configurator will be called with the connection instance after it's created
+            $connection->setConfigurator([$registerEnumTypeMappingConfigurator, '__invoke']);
 
             $schemaManager = $container->setDefinition(
                 sprintf('enumeum.%s_schema_manager', $name),
