@@ -24,7 +24,7 @@ use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\DiffCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\ValidateSchemaCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\ValidateSchemaCommand;
 use Enumeum\DoctrineEnumBundle\DefinitionRegistryCollection;
-use Enumeum\DoctrineEnumBundle\Middleware\RegisterEnumTypeMappingMiddleware;
+use Enumeum\DoctrineEnumBundle\Middleware\RegisterEnumTypeMappingConfigurator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -100,7 +100,7 @@ class ServicesPass implements CompilerPassInterface
             // This configurator is invoked after the connection is created to register type mappings
             $registerEnumTypeMappingConfigurator = $container->setDefinition(
                 sprintf('enumeum.%s_register_enum_type_mapping_configurator', $name),
-                new Definition(RegisterEnumTypeMappingMiddleware::class, [$definitionRegistry]),
+                new Definition(RegisterEnumTypeMappingConfigurator::class, [$definitionRegistry]),
             );
             
             // Add the configurator to the connection service

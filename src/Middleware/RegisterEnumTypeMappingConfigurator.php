@@ -22,7 +22,7 @@ use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
  * In DBAL 4.0, this is invoked as a service configurator after the connection is created
  * to register type mappings on the platform.
  */
-final class RegisterEnumTypeMappingMiddleware
+final class RegisterEnumTypeMappingConfigurator
 {
     public function __construct(
         private readonly DefinitionRegistry $definitionRegistry,
