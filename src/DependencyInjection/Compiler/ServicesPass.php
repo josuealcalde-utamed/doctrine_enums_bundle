@@ -24,7 +24,7 @@ use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\DiffCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\DoctrineDecoration\ValidateSchemaCommandDecorator;
 use Enumeum\DoctrineEnumBundle\Command\ValidateSchemaCommand;
 use Enumeum\DoctrineEnumBundle\DefinitionRegistryCollection;
-use Enumeum\DoctrineEnumBundle\EventSubscriber\RegisterEnumTypeMappingSubscriber;
+use Enumeum\DoctrineEnumBundle\Middleware\RegisterEnumTypeMappingMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -96,11 +96,12 @@ class ServicesPass implements CompilerPassInterface
             );
             $eventManager->addMethodCall('addEventSubscriber', [$postGenerateSchemaSubscriber]);
 
-            $registerEnumTypeMappingSubscriber = $container->setDefinition(
-                sprintf('enumeum.%s_register_enum_type_mapping_subscriber', $name),
-                new Definition(RegisterEnumTypeMappingSubscriber::class, [$definitionRegistry]),
+            // Register enum type mapping middleware for DBAL 4.0+
+            $registerEnumTypeMappingMiddleware = $container->setDefinition(
+                sprintf('enumeum.%s_register_enum_type_mapping_middleware', $name),
+                new Definition(RegisterEnumTypeMappingMiddleware::class, [$definitionRegistry]),
             );
-            $eventManager->addMethodCall('addEventSubscriber', [$registerEnumTypeMappingSubscriber]);
+            $registerEnumTypeMappingMiddleware->addTag('doctrine.middleware', ['connection' => $name]);
 
             $schemaManager = $container->setDefinition(
                 sprintf('enumeum.%s_schema_manager', $name),
