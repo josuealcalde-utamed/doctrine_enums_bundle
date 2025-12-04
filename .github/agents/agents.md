@@ -199,7 +199,8 @@ final class ExampleCommand extends Command
 
 ## Resources
 
-- Main dependency: [josuealcalde-utamed/doctrine-enums](https://github.com/josuealcalde-utamed/doctrine-enums)
+- Main dependency: `josuealcalde-utamed/doctrine-enums` package (fork of enumeum/doctrine_enums)
+- Original project: [enumeum/doctrine_enums](https://github.com/enumeum/doctrine_enums)
 - Symfony Console Component documentation
 - Doctrine ORM and DBAL documentation
 - PostgreSQL enum type documentation
