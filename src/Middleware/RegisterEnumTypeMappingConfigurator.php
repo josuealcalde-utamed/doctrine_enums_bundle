@@ -39,6 +39,7 @@ final class RegisterEnumTypeMappingConfigurator
     public function __invoke(Connection $connection): void
     {
         $platform = $connection->getDatabasePlatform();
+        $typeRegistry = Type::getTypeRegistry();
 
         // Register each enum type in the Doctrine type registry
         // This allows Doctrine to recognize the enum types during schema introspection
@@ -47,7 +48,6 @@ final class RegisterEnumTypeMappingConfigurator
 
             // Only register if not already registered
             if (!$platform->hasDoctrineTypeMappingFor($typeName)) {
-                $typeRegistry = Type::getTypeRegistry();
                 if (!$typeRegistry->has($typeName)) {
                     $typeRegistry->register($typeName, EnumeumType::create($typeName));
                 }
