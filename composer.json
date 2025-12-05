@@ -30,7 +30,7 @@
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^4.0",
-        "doctrine/migrations": "^3.2",
+        "doctrine/migrations": "^3.9",
         "doctrine/orm": "^2.14 || ^3.2",
         "josuealcalde-utamed/doctrine-enums": "^2.2",
         "symfony/console": "^4.4 || ^5.4 || ^6.0 || ^7.0",
