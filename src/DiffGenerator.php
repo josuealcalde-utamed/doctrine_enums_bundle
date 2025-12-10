@@ -47,7 +47,6 @@ class DiffGenerator
         $up = $this->migrationSqlGenerator->generate(
             $upSql,
             $formatted,
-            null,
             $lineLength,
             $checkDbPlatform,
         );
@@ -56,7 +55,6 @@ class DiffGenerator
         $down = $this->migrationSqlGenerator->generate(
             $downSql,
             $formatted,
-            null,
             $lineLength,
             $checkDbPlatform,
         );
