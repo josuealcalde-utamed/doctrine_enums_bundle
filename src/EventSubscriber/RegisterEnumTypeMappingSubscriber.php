@@ -14,7 +14,9 @@ namespace Enumeum\DoctrineEnumBundle\EventSubscriber;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Types\Type;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
+use Enumeum\DoctrineEnum\Type\EnumeumType;
 
 /**
  * Event subscriber that registers enum types with Doctrine's type mapping system.
@@ -46,14 +48,29 @@ class RegisterEnumTypeMappingSubscriber implements EventSubscriber
         $connection = $args->getConnection();
         $platform = $connection->getDatabasePlatform();
 
-        // Register each enum type name as a string type mapping
+        // Get the type registry (DBAL 3.x) or use static Type methods (DBAL 2.x)
+        $typeRegistry = method_exists(Type::class, 'getTypeRegistry') ? Type::getTypeRegistry() : null;
+
+        // Register each enum type in the Doctrine type registry and platform
         // This allows Doctrine to recognize the enum types during schema introspection
         foreach ($this->definitionRegistry->getDefinitions() as $definition) {
             $typeName = $definition->name;
 
             // Only register if not already registered
             if (!$platform->hasDoctrineTypeMappingFor($typeName)) {
-                $platform->registerDoctrineTypeMapping($typeName, 'string');
+                // Register in the type registry if available (DBAL 3.x)
+                if ($typeRegistry !== null) {
+                    if (!$typeRegistry->has($typeName)) {
+                        $typeRegistry->register($typeName, EnumeumType::create($typeName));
+                    }
+                    $platform->registerDoctrineTypeMapping($typeName, $typeName);
+                } else {
+                    // DBAL 2.x fallback: check if type exists using static method
+                    if (!Type::hasType($typeName)) {
+                        Type::addType($typeName, EnumeumType::class);
+                    }
+                    $platform->registerDoctrineTypeMapping($typeName, $typeName);
+                }
             }
         }
     }
